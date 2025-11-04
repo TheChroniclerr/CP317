@@ -1,0 +1,13 @@
+# Ignore cache / venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# Ignore git / logs
+.git
+*.log
+
+# Ignore requirements.txt from second COPY
+requirements.txt
