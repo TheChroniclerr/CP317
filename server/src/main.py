@@ -17,17 +17,4 @@ def users():
     )
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
-
-# def get_data():
-#     sample_data = {
-#         "message": "Hello, World!",
-#         "status": "success"
-#     }
-#     return jsonify(sample_data)
-
-# if __name__ == '__main__':
-#     app.run(host='', port=5000)
-
-
-#FUCKFUCKFUCKUFKCUFKCU
+    app.run(debug=True, host='0.0.0.0', port=8080)
