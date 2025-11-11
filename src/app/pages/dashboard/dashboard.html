@@ -1,0 +1,31 @@
+<div class="dashboard-wrapper">
+
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="logo-title">
+      <div class="logo"></div>
+      <h1 class="dashboard-title">Your Dashboard</h1>
+    </div>
+
+    <div class="profile" (click)="toggleMenu()">
+      <img class="profile-img" src="assets/profile.jpg" alt="Profile">
+      <span class="profile-name">John Doe ▾</span>
+
+      <!-- Dropdown menu -->
+      <div class="dropdown-menu" *ngIf="menuOpen">
+        <button (click)="logout()">Sign Out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Buttons -->
+  <div class="dashboard-actions">
+    <button mat-raised-button color="primary" routerLink="/shopping-list">Shopping List</button>
+    <button mat-raised-button color="primary" routerLink="/upload">Upload</button>
+    <button mat-raised-button color="primary" routerLink="/cart">Cart</button>
+  </div>
+
+  <div class="dashboard-content">
+    <p>Welcome to your dashboard!</p>
+  </div>
+</div>
