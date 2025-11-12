@@ -1,0 +1,109 @@
+<!-- Header (stays fixed at top) -->
+<header class="header" [class.scrolled]="scrolled">
+  <div class="logo">Refillr</div>
+
+  <div class="header-buttons">
+    <button class="login-btn" (click)="showLogin = true">Login</button>
+    <button class="signup-btn" (click)="showSignup = true">Sign Up</button>
+  </div>
+</header>
+
+
+<div class="auth-wrapper">
+  
+
+  <!-- Floating background -->
+  <div class="floating-bg">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+  </div>
+
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <h1 class="hero-title">Refillr</h1>
+    <p class="hero-subtitle">
+      Snap your fridge. Track what’s missing. Never run out again.
+    </p>
+    <button class="get-started" (click)="showSignup = true">Get Started</button>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="signup-overlay" *ngIf="showLogin">
+    <div class="signup-card">
+      <button class="close-btn" (click)="showLogin = false">&times;</button>
+      <h2>Login to Your Account</h2>
+      <form class="auth-form" (ngSubmit)="onLogin()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email address</mat-label>
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="loginEmail"
+            name="loginEmail"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="loginPassword"
+            name="loginPassword"
+            required
+          />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Signup Modal -->
+  <div class="signup-overlay" *ngIf="showSignup">
+    <div class="signup-card">
+      <button class="close-btn" (click)="showSignup = false">&times;</button>
+      <h2>Create Your Account</h2>
+      <form class="auth-form" (ngSubmit)="onSignup()">
+        <mat-form-field appearance="outline">
+          <mat-label>Full Name</mat-label>
+          <input
+            matInput
+            type="text"
+            [(ngModel)]="signupName"
+            name="signupName"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email address</mat-label>
+          <input
+            matInput
+            type="email"
+            [(ngModel)]="signupEmail"
+            name="signupEmail"
+            required
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            type="password"
+            [(ngModel)]="signupPassword"
+            name="signupPassword"
+            required
+          />
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit">
+          Sign Up
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

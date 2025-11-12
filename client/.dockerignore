@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules
+dist
+tmp
+temp
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# IDE and system files
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# Git and version control
+.git
+.gitignore
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS build artifacts
+*.swp
+*.swo
+
+# Docker files themselves (optional)
+# Dockerfile*
+# docker-compose*.yml
