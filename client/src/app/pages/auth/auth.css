@@ -1,0 +1,284 @@
+/* --- Header --- */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; /* full width */
+  padding: 14px clamp(16px, 4vw, 40px); /* responsive padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10000;
+  background: transparent;
+  backdrop-filter: none;
+  box-sizing: border-box;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, box-shadow 0.4s ease;
+  transform: translateZ(0);
+}
+
+/* Safe padding for rounded corners or notches */
+body {
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+  padding-top: env(safe-area-inset-top);
+}
+
+/* --- Logo --- */
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.logo:hover {
+  opacity: 0.85;
+}
+
+/* --- Header Buttons --- */
+.header-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-right: max(env(safe-area-inset-right, 20px), 12px);
+  white-space: nowrap;
+}
+
+.login-btn,
+.signup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  border-radius: 25px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* Login: outline */
+.login-btn {
+  background: transparent;
+  border: 2px solid #ffffffb2;
+  color: #fff;
+}
+.login-btn:hover {
+  background: #ffffff1f;
+  border-color: #fff;
+  transform: scale(1.05);
+}
+
+/* Sign Up: outline */
+.signup-btn {
+  background: transparent;
+  border: 2px solid #ffffffb2;
+  color: #fff;
+}
+.signup-btn:hover {
+  background: #ffffff1f;
+  border-color: #fff;
+  transform: scale(1.05);
+}
+
+/* --- Auth Layout --- */
+.auth-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  height: 100dvh; /* ✅ modern dynamic viewport height */
+  background: radial-gradient(circle at center, #0f2027, #203a43, #2c5364);
+  overflow: visible !important;
+  font-family: "Poppins", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #fff;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 0 20px;
+}
+
+/* fallback for older browsers */
+@supports not (height: 100dvh) {
+  .auth-wrapper {
+    height: calc(var(--vh, 1vh) * 100);
+  }
+}
+
+/* ensure body/html fill screen and remove white gaps */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #0f2027;
+  overflow-x: hidden;
+}
+
+/* --- Overlay for better contrast --- */
+.auth-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 0;
+}
+
+/* --- Hero Section --- */
+.hero-section {
+  position: relative;
+  z-index: 10;
+  max-width: 700px;
+  padding: 0 20px;
+  animation: fadeInUp 1.2s ease;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #ffffff, #1e49e5, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  line-height: 1.5;
+  padding-top: 5px;
+  background-size: 300% 300%;
+  animation: shine 6s ease infinite;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  opacity: 0.9;
+  margin-bottom: 40px;
+}
+
+/* --- Get Started Button --- */
+.get-started {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  border: none;
+  padding: 15px 45px;
+  border-radius: 50px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.get-started:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 30px rgba(118, 75, 162, 0.5);
+}
+
+/* --- Signup Modal --- */
+.signup-overlay {
+  position: fixed;
+  inset: 0;
+  backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+.signup-card {
+  background: rgba(20, 20, 20, 0.95);
+  border-radius: 20px;
+  padding: 40px 35px;
+  width: 400px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  text-align: left;
+  position: relative;
+  animation: scaleIn 0.4s ease;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.close-btn:hover {
+  color: #ff7070;
+}
+
+/* --- Angular Material Customization --- */
+::ng-deep .mat-mdc-form-field-flex {
+  background-color: #111 !important;
+  border-radius: 10px;
+}
+::ng-deep .mat-mdc-input-element {
+  color: #fff !important;
+}
+button[mat-raised-button][color="primary"] {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 12px;
+  width: 100%;
+  letter-spacing: 0.5px;
+  box-shadow: 0 3px 15px rgba(250, 251, 252, 0.4);
+  transition: all 0.2s ease;
+}
+button[mat-raised-button][color="primary"]:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 25px rgba(33, 150, 243, 0.5);
+}
+
+/* --- Animations --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+@keyframes shine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 1024px) {
+  .hero-title { font-size: 3rem; }
+  .hero-subtitle { font-size: 1.1rem; }
+  .get-started { padding: 12px 35px; font-size: 1rem; }
+  .header { padding: 15px 40px; }
+}
+
+@media (max-width: 768px) {
+  .header { padding: 12px 18px; }
+  .header-buttons { gap: 6px; padding-right: 10px; }
+  .login-btn, .signup-btn { padding: 6px 12px; font-size: 0.85rem; }
+  .logo { font-size: 1.4rem; }
+  .hero-section { padding: 0 15px; margin-top: 90px; }
+  .hero-title { font-size: 2.4rem; line-height: 1.2; }
+  .hero-subtitle { font-size: 1rem; }
+  .get-started { padding: 10px 30px; font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .logo { font-size: 1.2rem; }
+  .hero-title { font-size: 2rem; }
+  .hero-subtitle { font-size: 0.95rem; }
+  .get-started { width: 100%; padding: 12px 0; }
+  .login-btn, .signup-btn { padding: 6px 12px; font-size: 0.8rem; }
+}
