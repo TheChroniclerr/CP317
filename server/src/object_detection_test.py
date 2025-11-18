@@ -9,7 +9,7 @@ def main():
     wishlist_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mywishlist.csv")
     detector = AI_Image_Detection(image_path)
     detected_items, annotated_image_path = detector.item_detection()
-
+    
 
     print("Detected items image saved to:", annotated_image_path)
 
