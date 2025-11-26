@@ -1,1 +1,27 @@
-<p>upload works!</p>
+<div class="upload-container">
+
+  <h2>Scan Your Fridge</h2>
+
+  <!-- Upload Image -->
+  <label class="btn">
+    Choose Image
+    <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+  </label>
+
+  <!-- Take Photo -->
+  <label class="btn">
+    Take Photo
+    <input type="file" accept="image/*" capture="environment" (change)="onCameraCapture($event)" hidden>
+  </label>
+
+  <div *ngIf="loading" class="loading">
+    Analyzing image...
+  </div>
+
+  <!-- API result -->
+  <div *ngIf="!loading && result" class="result">
+    <h3>Detected Items</h3>
+    <pre>{{ result | json }}</pre>
+  </div>
+
+</div>

@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app, origins='http://localhost:5173')
+cors = CORS(app, origins='http://localhost:4200')
 
 @app.route('/api/data', methods=['GET'])
 def users():
@@ -11,7 +11,8 @@ def users():
             "users": [
                 "Alice",
                 "Bob",
-                "Charlie"
+                "Charlie",
+                "Diana"
             ]
         }
     )
