@@ -19,9 +19,12 @@ class Comparison:
             if match and score >= MATCH:
                 found.add(match)
         
+        
         for item in self.wishlist_items:
+            
             if item not in found:
                 not_found.append(item)
+        
         
         return list(found), not_found
     
