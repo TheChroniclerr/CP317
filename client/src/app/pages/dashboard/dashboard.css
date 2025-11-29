@@ -1,10 +1,9 @@
-:host {
-  display: block;
-  min-height: 100vh;
-  background-color: #0d0d0d;
-  color: #f5f5f5;
-  font-family: 'Poppins', 'Segoe UI', Roboto, sans-serif;
-  padding: 20px;
+.dashboard-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  font-family: 'Inter', sans-serif;
+  color: #333;
 }
 
 /* Header */
@@ -12,131 +11,81 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #111;
-  border-radius: 12px;
-  margin-bottom: 30px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.7);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .logo-title {
   display: flex;
   align-items: center;
-  gap: 15px;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: radial-gradient(circle at center, #2113a0 0%, #a6aacf 100%);
-  box-shadow: 0 0 10px rgba(79, 195, 247, 0.6);
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  border-radius: 8px;
+  margin-right: 0.75rem;
 }
 
 .dashboard-title {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
+/* Profile */
 .profile {
+  position: relative;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.5rem;
 }
 
 .profile-img {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #2943b6;
+  border: 2px solid #6366f1;
 }
 
 .profile-name {
-  font-weight: 600;
-}
-
-/* Buttons */
-.dashboard-actions {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.dashboard-actions button {
-  flex: 1;
-  background: linear-gradient(90deg, #ada9a9, #2943b6);
-  color: #fff;
-  font-weight: 600;
-  border-radius: 8px;
-  padding: 12px 0;
-  box-shadow: 0 3px 15px rgba(33, 150, 243, 0.4);
-  transition: all 0.2s ease;
-}
-
-.dashboard-actions button:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
-}
-
-/* Content */
-.dashboard-content {
-  padding: 20px;
-  background-color: #111;
-  border-radius: 12px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.5);
-}
-
-/* Profile section */
-.profile {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  user-select: none;
+  font-weight: 500;
+  color: #6366f1;
 }
 
 /* Dropdown menu */
 .dropdown-menu {
   position: absolute;
-  top: 50px;
+  top: 60px;
   right: 0;
-  background-color: #1a1a1a;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
-  padding: 8px 0;
-  z-index: 100;
-  min-width: 120px;
-  animation: fadeIn 0.2s ease-in-out;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  width: 180px;
+  z-index: 10;
+  padding: 0.5rem 0;
 }
 
 .dropdown-menu button {
   width: 100%;
-  background: none;
-  border: none;
-  color: #fff;
   text-align: left;
-  padding: 10px 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
+  padding: 0.5rem 1rem;
+  color: #333;
 }
 
-.dropdown-menu button:hover {
-  background-color: #292929;
+/* Action buttons */
+.dashboard-actions {
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 1rem;
 }
 
-/* Dropdown animation */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-
-/* Responsive */
-@media (max-width: 600px) {
-  .dashboard-actions {
-    flex-direction: column;
-  }
+/* Content */
+.dashboard-content {
+  padding: 1rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
 }

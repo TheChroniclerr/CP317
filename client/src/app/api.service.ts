@@ -17,6 +17,7 @@ export class ApiService {
   formData.append('image', file);
 
   return this.http.post<any>('http://localhost:8080/api/extract', formData);
-  }
+}
+
 
 }

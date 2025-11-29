@@ -29,8 +29,8 @@ export class AuthComponent {
   showSignup = false;
 
   // --- Login fields ---
-  loginEmail = 'test@gmail.com';
-  loginPassword = 'test123';
+  loginEmail = '';
+  loginPassword = '';
 
   // --- Signup fields ---
   signupName = '';
@@ -72,18 +72,19 @@ export class AuthComponent {
   // SIGNUP WITH FIREBASE
   // ---------------------------
   onSignup() {
-    if (!this.signupName || !this.signupEmail || !this.signupPassword) {
-      this.snackBar.open('Please complete all fields.', 'Close', { duration: 2000 });
-      return;
-    }
-
-    this.authService.signup(this.signupEmail, this.signupPassword)
-      .then(() => {
-        this.snackBar.open('Account created successfully!', 'Close', { duration: 2000 });
-        this.router.navigate(['/dashboard']);
-      })
-      .catch(error => {
-        this.snackBar.open(error.message, 'Close', { duration: 2000 });
-      });
+  if (!this.signupName || !this.signupEmail || !this.signupPassword) {
+    this.snackBar.open('Please complete all fields.', 'Close', { duration: 2000 });
+    return;
   }
+
+  this.authService.signup(this.signupEmail, this.signupPassword, this.signupName)
+    .then(() => {
+      this.snackBar.open('Account created successfully!', 'Close', { duration: 2000 });
+      this.router.navigate(['/dashboard']);
+    })
+    .catch(error => {
+      this.snackBar.open(error.message, 'Close', { duration: 2000 });
+    });
+}
+
 }

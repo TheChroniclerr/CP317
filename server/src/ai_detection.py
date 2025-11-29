@@ -1,8 +1,17 @@
 from ultralytics import YOLO
 import cv2
-import os
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "best.pt")
+LABEL_MAP = {
+    'bottle': ['milk', 'orange juice'],
+    'apple': ['apple'],
+    'bowl': ['lettuce', 'tomato', 'cheese'],
+    'banana': ['banana'],
+    'refrigerator': [],  
+}
+
+
+
+MODEL_PATH = "yolov8n.pt"
 CONFIDENCE = 0.35
 class AI_Image_Detection:
     def __init__(self, image_path: str):
@@ -21,7 +30,10 @@ class AI_Image_Detection:
                 item_name = self.model.names[class_id]
                 items_detected.append(item_name)
         
-        
+        extended_label = [] 
+        for label in items_detected:
+            extended_items = LABEL_MAP.get(label, [])
+            extended_label.extend(extended_items)
         
         annotated_image = record.plot()
         annotated_image_path = "fridge_detected.jpg"
@@ -29,4 +41,4 @@ class AI_Image_Detection:
 
         
         
-        return list(set(items_detected)), annotated_image_path 
+        return list(set(extended_label)), annotated_image_path 

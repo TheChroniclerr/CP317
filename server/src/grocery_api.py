@@ -3,42 +3,61 @@ import json
 import pandas as pd
 from serpapi import GoogleSearch
 
-#takes item to search for in api calls 
+# Takes item to search for in api calls 
 def make_api_call(item):
-    #url to amazon api
+    # url to amazon api
     url_amazon = "https://api-to-find-grocery-prices.p.rapidapi.com/amazon"
-    #query of what to find in api call
-    querystring_amazon = {"query":item,"country":"us","page":"1"}
-    #api key for amazon
+    # query of what to find in api call
+    querystring_amazon = {"query": item, "country": "us", "page": "1"}
+    # api key for amazon
     headers_amazon = {
-	"x-rapidapi-key": "8c1e48015cmsh7969212773f17a8p1edcaejsnd39e13360f91",
-	"x-rapidapi-host": "api-to-find-grocery-prices.p.rapidapi.com"
-}
+        "x-rapidapi-key": "8c1e48015cmsh7969212773f17a8p1edcaejsnd39e13360f91",
+        "x-rapidapi-host": "api-to-find-grocery-prices.p.rapidapi.com"
+    }
 
-    #walmart api key
+    # walmart api key
     params = {
-    "engine": "walmart",
-    "query": item,
-    "sort": "price_low",
-    "page": 1,
-    "api_key": "7d6b417cf7002e5ba57d4a7179f5e0c046b9c1614f39ec930a12e091378c61a1"
-}
-    #gets data from walmart and amazon
-    response_amazon = requests.get(url_amazon, headers=headers_amazon, params=querystring_amazon)
-    search = GoogleSearch(params)
-    response_walmart = search.get_dict() 
+        "engine": "walmart",
+        "query": item,
+        "sort": "price_low",
+        "page": 1,
+        "api_key": "7d6b417cf7002e5ba57d4a7179f5e0c046b9c1614f39ec930a12e091378c61a1"
+    }
+    
+    # Gets data from walmart and amazon
+    try:
+        response_amazon = requests.get(url_amazon, headers=headers_amazon, params=querystring_amazon)
+    except Exception as e:
+        print(f"Amazon connection error: {e}")
+        response_amazon = None
 
-    #check to make sure api call was successful
+    try:
+        search = GoogleSearch(params)
+        response_walmart = search.get_dict() 
+    except Exception as e:
+        # Prevent crash if SerpApi fails
+        raise Exception(f"Walmart search failed: {str(e)}")
+
+    # Check to make sure api call was successful
     if "organic_results" not in response_walmart:
-        print("API call failed")
-        exit()
+        # We still raise exception for Walmart because if both fail or the main one fails, we might want to know.
+        # However, you could relax this too if you wanted.
+        raise Exception("Walmart API call returned no organic results")
    
-    #checks make sure api call was successful
-    if response_amazon.status_code != 200:
-        print("API call failed:")
-        exit()
+    # Processing Amazon Results (Soft Fail)
+    results_amazon = []
+    if response_amazon and response_amazon.status_code == 200:
+        try:
+            data_amazon = response_amazon.json()
+            results_amazon = data_amazon.get("products", [])
+        except ValueError:
+            print("Amazon API returned invalid JSON")
+    else:
+        # Log the error but continue so we can still return Walmart results
+        status = response_amazon.status_code if response_amazon else "Connection Error"
+        print(f"Amazon API failed with status: {status}. Skipping Amazon results.")
 
-    #get prices from walmart responses to be able to use in data frame 
+    # Get prices from walmart responses to be able to use in data frame 
     results_walmart = response_walmart["organic_results"]
     for item in results_walmart:
         primary = item.get("primary_offer", {})
@@ -47,22 +66,19 @@ def make_api_call(item):
             price_value = primary.get("offer_price")
             item["price_value"] = price_value
 
-    #get product data form amazon search results
-    data_amazon = response_amazon.json()
-    results_amazon = data_amazon.get("products", [])
-
-    #create a data frame to store resuls
+    # Create a data frame to store resuls
     df = pd.DataFrame(results_amazon)
     df2 = pd.DataFrame(results_walmart)
+    
     min_price_amazon = None
     min_price_walmart = None
     link_amazon = None
     link_walmart = None
 
-    #try to exract prices from amazon dataframe
-    if "price" in df.columns:
+    # Try to extract prices from amazon dataframe
+    if not df.empty and "price" in df.columns:
         try:
-            #convert prices to floats 
+            # Convert prices to floats 
             df["price_value"] = df["rawPrice"].astype(float)
             min_index_amazon = df["price_value"].idxmin()
             min_row_amazon = df.loc[min_index_amazon]
@@ -70,18 +86,19 @@ def make_api_call(item):
             # Get the link to the item if it exists
             link_amazon = min_row_amazon.get("amazonLink", "No link available")
         except Exception as e:
-            print("Couldn't get price:", e)
+            print("Couldn't get Amazon price:", e)
 
-    #try to extract prices from walmart data frame
-    if "price_value" in df2.columns:
+    # Try to extract prices from walmart data frame
+    if not df2.empty and "price_value" in df2.columns:
         try:
             # Convert prices to floats 
             df2["price_value"] = df2["price_value"].astype(float)
             min_index_walmart = df2["price_value"].idxmin()
             min_row_walmart = df2.loc[min_index_walmart]
             min_price_walmart = min_row_walmart["price_value"]
-            #Get link to the item it if exists
+            # Get link to the item it if exists
             link_walmart = min_row_walmart.get("product_page_url", "No link available")
         except Exception as e:
-            print("Couldn't get price:", e)
+            print("Couldn't get Walmart price:", e)
+            
     return min_price_walmart, min_price_amazon, link_walmart, link_amazon

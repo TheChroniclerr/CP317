@@ -4,28 +4,30 @@
   <header class="dashboard-header">
     <div class="logo-title">
       <div class="logo"></div>
-      <h1 class="dashboard-title">Your Dashboard</h1>
+      <h1 class="dashboard-title">Dashboard</h1>
     </div>
 
     <div class="profile" (click)="toggleMenu()">
-      <img class="profile-img" src="assets/profile.jpg" alt="Profile">
-      <span class="profile-name">John Doe ▾</span>
+      <img class="profile-img" [src]="userPfp" alt="Profile">
+      <span class="profile-name">{{ userName }} ▾</span>
 
       <!-- Dropdown menu -->
       <div class="dropdown-menu" *ngIf="menuOpen">
-        <button (click)="logout()">Sign Out</button>
+        <button mat-button color="warn" (click)="logout()">Sign Out</button>
       </div>
     </div>
   </header>
 
-  <!-- Buttons -->
+  <!-- Action buttons -->
   <div class="dashboard-actions">
-    <button mat-raised-button color="primary" routerLink="/shopping-list">Shopping List</button>
-    <button mat-raised-button color="primary" routerLink="/upload">Upload</button>
-    <button mat-raised-button color="primary" routerLink="/cart">Cart</button>
+    <button mat-raised-button color="accent" routerLink="/shopping-list">Shopping List</button>
+    <button mat-raised-button color="accent" routerLink="/upload">Upload</button>
   </div>
 
+  <!-- Main content -->
   <div class="dashboard-content">
-    <p>Welcome to your dashboard!</p>
+    <p>Welcome, <strong>{{ userName }}</strong>!</p>
+    <p>Manage your dashboard easily.</p>
   </div>
+
 </div>

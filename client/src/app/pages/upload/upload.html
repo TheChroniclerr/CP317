@@ -1,27 +1,23 @@
-<div class="upload-container">
+<h2>Upload or Capture Image</h2>
 
-  <h2>Scan Your Fridge</h2>
+<!-- Hidden camera/file input -->
+<input type="file" accept="image/*" capture="environment"
+       (change)="onCameraCapture($event)" hidden #fileInput>
 
-  <!-- Upload Image -->
-  <label class="btn">
-    Choose Image
-    <input type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
-  </label>
+<button (click)="fileInput.click()">Take/Choose Photo</button>
 
-  <!-- Take Photo -->
-  <label class="btn">
-    Take Photo
-    <input type="file" accept="image/*" capture="environment" (change)="onCameraCapture($event)" hidden>
-  </label>
+<!-- Loading spinner -->
+<div *ngIf="loading" class="loading">
+  Processing image, please wait...
+</div>
 
-  <div *ngIf="loading" class="loading">
-    Analyzing image...
-  </div>
+<!-- Results -->
+<div *ngIf="!loading && result" class="result">
+  <h3>Detected Items:</h3>
 
-  <!-- API result -->
-  <div *ngIf="!loading && result" class="result">
-    <h3>Detected Items</h3>
-    <pre>{{ result | json }}</pre>
-  </div>
-
+  <ul>
+    <li *ngFor="let item of result">
+      {{ item }}
+    </li>
+  </ul>
 </div>

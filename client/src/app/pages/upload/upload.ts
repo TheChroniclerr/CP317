@@ -1,49 +1,59 @@
 import { Component } from '@angular/core';
-import { CommonModule, JsonPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-upload',
   standalone: true,
-  imports: [CommonModule, JsonPipe],
+  imports: [CommonModule],
   templateUrl: './upload.html',
   styleUrls: ['./upload.css'],
 })
 export class UploadComponent {
-
   selectedImage: File | null = null;
   loading = false;
   result: any = null;
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  onFileSelected(event: any) {
-    this.selectedImage = event.target.files[0];
-    this.upload();
-  }
-
+  // When a user selects or captures an image
   onCameraCapture(event: any) {
-    this.selectedImage = event.target.files[0];
-    this.upload();
+    this.selectedImage = event.target.files[0] || null;
+    this.previewImage();
+    this.uploadImage();
   }
 
-  upload() {
+  // Preview before upload
+  previewImage() {
+    if (!this.selectedImage) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      // You can bind preview if needed
+    };
+    reader.readAsDataURL(this.selectedImage);
+  }
+
+  // Upload to Python backend
+  uploadImage() {
     if (!this.selectedImage) return;
 
     this.loading = true;
+    this.result = null;
 
     const formData = new FormData();
     formData.append('image', this.selectedImage);
 
-    this.http.post('http://127.0.0.1:8000/analyze-fridge', formData)
-      .subscribe({
-        next: (res) => {
-          this.result = res;
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
-        }
+    fetch('http://localhost:8080/analyze-image', {
+      method: 'POST',
+      body: formData
+    })
+      .then(res => res.json())
+      .then(data => {
+        this.result = data.items; // AI output list
+      })
+      .catch(err => console.error('Upload error:', err))
+      .finally(() => {
+        this.loading = false;
       });
   }
 }
