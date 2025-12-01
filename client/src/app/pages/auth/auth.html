@@ -1,6 +1,8 @@
-<!-- Header (stays fixed at top) -->
+<!-- Header (Fixed) -->
 <header class="header" [class.scrolled]="scrolled">
-  <div class="logo">Refillr</div>
+  <div class="logo">
+    Refillr
+  </div>
 
   <div class="header-buttons">
     <button class="login-btn" (click)="showLogin = true">Login</button>
@@ -8,11 +10,9 @@
   </div>
 </header>
 
-
 <div class="auth-wrapper">
-  
 
-  <!-- Floating background -->
+  <!-- Glowing Background Blobs -->
   <div class="floating-bg">
     <div class="blob blob1"></div>
     <div class="blob blob2"></div>
@@ -23,7 +23,8 @@
   <div class="hero-section">
     <h1 class="hero-title">Refillr</h1>
     <p class="hero-subtitle">
-      Snap your fridge. Track what’s missing. Never run out again.
+      Snap your fridge. Track what’s missing. <br>
+      Never run out of groceries again.
     </p>
     <button class="get-started" (click)="showSignup = true">Get Started</button>
   </div>
@@ -32,9 +33,9 @@
   <div class="signup-overlay" *ngIf="showLogin">
     <div class="signup-card">
       <button class="close-btn" (click)="showLogin = false">&times;</button>
-      <h2>Login to Your Account</h2>
+      <h2>Welcome Back</h2>
       <form class="auth-form" (ngSubmit)="onLogin()">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>Email address</mat-label>
           <input
             matInput
@@ -45,7 +46,7 @@
           />
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>Password</mat-label>
           <input
             matInput
@@ -65,9 +66,9 @@
   <div class="signup-overlay" *ngIf="showSignup">
     <div class="signup-card">
       <button class="close-btn" (click)="showSignup = false">&times;</button>
-      <h2>Create Your Account</h2>
+      <h2>Create Account</h2>
       <form class="auth-form" (ngSubmit)="onSignup()">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>Full Name</mat-label>
           <input
             matInput
@@ -78,7 +79,7 @@
           />
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 10px;">
           <mat-label>Email address</mat-label>
           <input
             matInput
@@ -89,7 +90,7 @@
           />
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 20px;">
           <mat-label>Password</mat-label>
           <input
             matInput

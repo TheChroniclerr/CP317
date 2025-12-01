@@ -1,33 +1,159 @@
 <div class="dashboard-wrapper">
 
-  <!-- Header -->
+  <!-- --- HEADER --- -->
   <header class="dashboard-header">
     <div class="logo-title">
-      <div class="logo"></div>
-      <h1 class="dashboard-title">Dashboard</h1>
+      <div class="logo">R</div> <!-- Simple text or initial instead of emoji -->
+      <h1 class="dashboard-title">Refillr</h1>
     </div>
 
+    <!-- Profile Section (No Image, Just Name) -->
     <div class="profile" (click)="toggleMenu()">
-      <img class="profile-img" [src]="userPfp" alt="Profile">
       <span class="profile-name">{{ userName }} ▾</span>
-
-      <!-- Dropdown menu -->
+      
+      <!-- Dropdown -->
       <div class="dropdown-menu" *ngIf="menuOpen">
-        <button mat-button color="warn" (click)="logout()">Sign Out</button>
+        <button (click)="logout()">Signout</button>
       </div>
     </div>
   </header>
 
-  <!-- Action buttons -->
-  <div class="dashboard-actions">
-    <button mat-raised-button color="accent" routerLink="/shopping-list">Shopping List</button>
-    <button mat-raised-button color="accent" routerLink="/upload">Upload</button>
+  <!-- --- ERROR BANNER --- -->
+  <div *ngIf="errorMessage" class="error-banner">
+    {{ errorMessage }}
   </div>
 
-  <!-- Main content -->
+  <!-- --- MAIN CONTENT --- -->
   <div class="dashboard-content">
-    <p>Welcome, <strong>{{ userName }}</strong>!</p>
-    <p>Manage your dashboard easily.</p>
-  </div>
 
+    <!-- SECTION 1: INPUTS (Hidden when analyzing/results show) -->
+    <div class="input-section" *ngIf="!analysisResult && !isAnalyzing">
+      
+      <!-- Card A: Image Upload -->
+      <div class="card">
+        <h2>Fridge Photo</h2> <!-- Removed Camera Emoji -->
+        <div class="upload-area">
+          <label for="fileInput" class="upload-btn">
+            <!-- Removed Cloud Emoji, using text/icon span -->
+            <span class="upload-icon">+</span> 
+            <span>{{ isUploadingImage ? 'Uploading...' : 'Click to Upload' }}</span>
+          </label>
+          <input 
+            id="fileInput" 
+            type="file" 
+            (change)="onImageSelected($event)" 
+            accept="image/*" 
+            style="display:none"
+          >
+        </div>
+        
+        <!-- Preview -->
+        <div *ngIf="imagePreviewUrl" class="preview-box">
+          <img [src]="imagePreviewUrl" alt="Fridge Preview">
+          <span class="success-text" *ngIf="uploadedImageName">Image Uploaded</span>
+        </div>
+      </div>
+
+      <!-- Card B: Wishlist -->
+      <div class="card">
+        <h2>Your Wishlist</h2> <!-- Removed Memo Emoji -->
+        <div class="wishlist-input">
+          <input 
+            [(ngModel)]="newItem" 
+            placeholder="Add item (e.g. Eggs)" 
+            (keyup.enter)="addWishlistItem()"
+          >
+          <button class="primary-btn small-btn" (click)="addWishlistItem()">Add</button>
+        </div>
+
+        <ul class="wishlist-list">
+          <li *ngFor="let item of wishlistItems; let i = index">
+            {{ item }}
+            <span class="remove" (click)="removeWishlistItem(i)">×</span>
+          </li>
+          <li *ngIf="wishlistItems.length === 0" class="empty-list">
+            List is empty...
+          </li>
+        </ul>
+
+        <button 
+          class="primary-btn full-width" 
+          (click)="saveAndUploadWishlist()" 
+          [disabled]="wishlistItems.length === 0 || isUploadingCsv">
+          {{ isUploadingCsv ? 'Saving...' : 'Save & Upload List' }}
+        </button>
+        <span class="success-text" *ngIf="uploadedCsvName">Wishlist Saved</span>
+      </div>
+    </div>
+
+    <!-- SECTION 2: ACTION BUTTON -->
+    <div class="analyze-container" *ngIf="!analysisResult && !isAnalyzing">
+      <button 
+        class="analyze-btn"
+        [disabled]="!isReadyToAnalyze()" 
+        (click)="runAnalysis()">
+        {{ isReadyToAnalyze() ? 'Analyze Fridge Now' : 'Complete Steps 1 & 2 to Start' }}
+      </button>
+    </div>
+
+    <!-- SECTION 3: LOADING STATE -->
+    <div class="loading-section" *ngIf="isAnalyzing">
+      <div class="spinner"></div>
+      <h3>Analyzing your fridge...</h3>
+      <p>Detecting items, checking wishlist, and finding best prices.</p>
+    </div>
+
+    <!-- SECTION 4: RESULTS DISPLAY -->
+    <div class="results-section" *ngIf="analysisResult">
+      
+      <div class="results-grid">
+        
+        <!-- Result Card 1: Detected Items -->
+        <div class="card result-card info">
+          <h3>Detected In Fridge</h3> <!-- Removed Eyes Emoji -->
+          <div class="tags">
+            <span *ngFor="let item of analysisResult.analysis.items_detected_in_image" class="tag">
+              {{ item | titlecase }}
+            </span>
+            <span *ngIf="analysisResult.analysis.items_detected_in_image.length === 0" class="empty-text">
+              No specific items detected.
+            </span>
+          </div>
+        </div>
+
+        <!-- Result Card 2: Shopping List -->
+        <div class="card result-card warning">
+          <h3>Shopping List (Missing)</h3> <!-- Removed Cart Emoji -->
+          
+          <div *ngIf="analysisResult.results.missing.length === 0" class="success-message">
+             You have everything in your wishlist!
+          </div>
+
+          <div *ngFor="let item of analysisResult.shopping_options | keyvalue" class="shopping-item">
+            <h4>{{ item.key | titlecase }}</h4>
+            
+            <!-- Walmart Price -->
+            <div class="store-row" *ngIf="item.value.walmart?.price">
+              <span>Walmart (${{ item.value.walmart?.price }})</span>
+              <a [href]="item.value.walmart?.link" target="_blank" class="store-link">Buy</a>
+            </div>
+
+            <!-- Amazon Price -->
+            <div class="store-row" *ngIf="item.value.amazon?.price">
+              <span>Amazon (${{ item.value.amazon?.price }})</span>
+              <a [href]="item.value.amazon?.link" target="_blank" class="store-link">Buy</a>
+            </div>
+
+            <!-- Error/No Price -->
+            <div *ngIf="item.value.error" class="error-text">
+              Prices unavailable.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="reset-btn" (click)="reset()">Start New Scan</button>
+    </div>
+
+  </div>
 </div>

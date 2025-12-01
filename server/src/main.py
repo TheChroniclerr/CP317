@@ -1,15 +1,18 @@
 import os
 from flask import Flask, request, jsonify
+from flask_cors import CORS # Import CORS
 from werkzeug.utils import secure_filename
 
 # Import the custom classes
-# Ensure ai_detection.py, wishlist.py, comparison.py AND grocery_api.py are in the same directory
 from ai_detection import AI_Image_Detection
 from wishlist import Wishlist
 from comparison import Comparison
 from grocery_api import make_api_call
 
 app = Flask(__name__)
+
+# FIX: Allow ALL origins (*) so your phone at http://10.0.0.141:4200 can connect without CORS errors
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # --- Configuration ---
 # Create a folder named 'uploads' in the same directory if it doesn't exist
@@ -20,7 +23,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit upload size to 16MB
 
 # Supported file extensions
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'csv', 'webp'}
 
 # Simple in-memory list to track items (uploaded filenames)
 items_list = []
@@ -47,13 +50,16 @@ def upload_file():
         return jsonify({"error": "No selected file"}), 400
         
     if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
-        
-        items_list.append(filename)
-        
-        return jsonify({"message": "File uploaded successfully", "filename": filename}), 201
+        try:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            
+            items_list.append(filename)
+            
+            return jsonify({"message": "File uploaded successfully", "filename": filename}), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
     
     return jsonify({"error": "Invalid file type"}), 400
 
@@ -112,8 +118,6 @@ def compare_detection_with_wishlist(image_filename, csv_filename):
         # 5. Find Shopping Options for Missing Items
         shopping_data = {}
         
-        # NOTE: This loop runs synchronously. If you have many missing items, 
-        # this request might take a long time to complete.
         for item in missing_from_fridge:
             try:
                 # Call the external API function
@@ -130,7 +134,7 @@ def compare_detection_with_wishlist(image_filename, csv_filename):
                     }
                 }
             except Exception as api_error:
-                # Handle API errors gracefully so we don't crash the whole response
+                # Handle API errors gracefully
                 shopping_data[item] = {
                     "error": f"Could not fetch data: {str(api_error)}"
                 }
@@ -152,4 +156,5 @@ def compare_detection_with_wishlist(image_filename, csv_filename):
 
 if __name__ == '__main__':
     print(f"Server starting. Uploads will be saved to: {os.path.abspath(UPLOAD_FOLDER)}")
-    app.run(debug=True, port=5000)
+    # FIX 2: host='0.0.0.0' exposes the server to your local network (phone)
+    app.run(debug=True, host='0.0.0.0', port=5000)
