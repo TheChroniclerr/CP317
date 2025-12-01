@@ -34,5 +34,5 @@ class AI_Image_Detection:
         cv2.imwrite(annotated_image_path, annotated_image)
 
         
-        # Returns list of detected items and path to annotated image 
+        # Returns list of detected items and path to annotated image. 
         return list(set(items_detected)), annotated_image_path 
