@@ -1,15 +1,11 @@
 from ultralytics import YOLO
 import cv2
+import os
 
-# Map generic YOLO labels to specific grocery items
-LABEL_MAP = {
-    'bottle': ['milk', 'juice'],
-    'bowl': ['salad', 'soup'],
-    'cup': ['beverage'],
-    # You can add more specific mappings here
-}
+# Gets the model path to the trained detection model 
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "best.pt")
 
-MODEL_PATH = "yolov8n.pt"
+# Confidence threshold for detections
 CONFIDENCE = 0.35
 
 class AI_Image_Detection:
@@ -17,37 +13,26 @@ class AI_Image_Detection:
         self.image_path = image_path
         self.model = YOLO(MODEL_PATH)
 
-    def item_detection(self) -> tuple[list[str], str]:
-        # Run inference
-        results = self.model.predict(source=self.image_path, conf=CONFIDENCE)
-        record = results[0]
+    def item_detection(self) -> list[str]:
+        
+        results = self.model.predict(source=self.image_path, conf=CONFIDENCE) 
+        record = results[0] 
         items_detected = []
 
-        # Extract detected class names
+        # Iterates through detected boxes and filters by confidence score 
         for box in record.boxes:
-            confidence_score = (box.conf.cpu().numpy())
-            if confidence_score >= CONFIDENCE:
-                class_id = int(box.cls.cpu().numpy())
-                item_name = self.model.names[class_id]
-                items_detected.append(item_name)
+            confidence_score = (box.conf.cpu().numpy()) # Get confidence score
+            if confidence_score >= CONFIDENCE: 
+                class_id = int(box.cls.cpu().numpy()) # Get class ID
+                item_name = self.model.names[class_id] # Get item name from class ID
+                items_detected.append(item_name) # Append detected item name to the list
         
-        # FIX: Don't discard items! 
-        # If item is in map, extend with specific ingredients.
-        # If NOT in map, keep the original label (e.g., "apple", "pizza").
-        extended_label = [] 
-        for label in items_detected:
-            # Skip 'refrigerator' as it's not a food item
-            if label == 'refrigerator':
-                continue
-                
-            # Use mapping if exists, otherwise wrap the label in a list
-            extended_items = LABEL_MAP.get(label, [label])
-            extended_label.extend(extended_items)
         
-        # Save annotated image
+        # Save annotated image with detected boxes
         annotated_image = record.plot()
         annotated_image_path = "fridge_detected.jpg"
         cv2.imwrite(annotated_image_path, annotated_image)
 
-        # Return unique items
-        return list(set(extended_label)), annotated_image_path
+        
+        # Returns list of detected items and path to annotated image 
+        return list(set(items_detected)), annotated_image_path 
