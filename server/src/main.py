@@ -156,5 +156,5 @@ def compare_detection_with_wishlist(image_filename, csv_filename):
 
 if __name__ == '__main__':
     print(f"Server starting. Uploads will be saved to: {os.path.abspath(UPLOAD_FOLDER)}")
-    # FIX 2: host='0.0.0.0' exposes the server to your local network (phone)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # FIX: host='0.0.0.0' exposes to phone, port=5001 avoids "Address in use" error
+    app.run(debug=True, host='0.0.0.0', port=5001)
