@@ -1,9 +1,8 @@
 import os
 from flask import Flask, request, jsonify
-from flask_cors import CORS # Import CORS
+from flask_cors import CORS 
 from werkzeug.utils import secure_filename
 
-# Import the custom classes
 from ai_detection import AI_Image_Detection
 from wishlist import Wishlist
 from comparison import Comparison
@@ -11,11 +10,8 @@ from grocery_api import make_api_call
 
 app = Flask(__name__)
 
-# FIX: Allow ALL origins (*) so your phone at http://10.0.0.141:4200 can connect without CORS errors
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# --- Configuration ---
-# Create a folder named 'uploads' in the same directory if it doesn't exist
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -156,5 +152,4 @@ def compare_detection_with_wishlist(image_filename, csv_filename):
 
 if __name__ == '__main__':
     print(f"Server starting. Uploads will be saved to: {os.path.abspath(UPLOAD_FOLDER)}")
-    # FIX: host='0.0.0.0' exposes to phone, port=5001 avoids "Address in use" error
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    app.run(debug=True, host='0.0.0.0', port=5000)

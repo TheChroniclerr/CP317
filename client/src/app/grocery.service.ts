@@ -6,9 +6,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class GroceryService {
-  // DYNAMIC URL: Uses the hostname from the browser address bar.
-  // If you visit http://10.0.0.141:4200, this becomes http://10.0.0.141:5000
-  // If you visit http://localhost:4200, this becomes http://localhost:5000
   private baseUrl = `http://${window.location.hostname}:5000`;
 
   constructor(private http: HttpClient) {}
